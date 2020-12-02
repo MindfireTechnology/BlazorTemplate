@@ -1,0 +1,31 @@
+@inherits LayoutComponentBase
+@*MudBlazor Components Needed at the Root*@
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+
+<MudLayout>
+	<MudAppBar Elevation="1">
+		<MudIconButton Icon="@Icons.Material.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+		<MudText Typo="Typo.h5" Class="ml-3">Application</MudText>
+		<MudAppBarSpacer />
+		<MudIconButton Icon="@Icons.Material.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
+	</MudAppBar>
+	<MudDrawer Open="DrawerOpen" Clipped="true" Elevation="2">
+		<NavMenu />
+	</MudDrawer>
+	<MudMainContent>
+		@Body
+	</MudMainContent>
+</MudLayout>
+
+@code {
+	protected bool DrawerOpen { get; set; }  = true;
+
+	void DrawerToggle()
+	{
+		DrawerOpen = !DrawerOpen;
+	}
+}
+
