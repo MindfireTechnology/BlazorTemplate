@@ -139,7 +139,7 @@ namespace BlazorStateManager
 
 					Logger?.LogInformation(
 						$"Invoking Topic '{(topic.TopicType == null ? string.Empty : $"Type: {topic.TopicType}")} {(string.IsNullOrWhiteSpace(topic.TopicString) ? string.Empty : topic.TopicString)}' '{subscriber?.GetHashCode()}:{subscriber}'");
-
+					
 					subscriber.Action.DynamicInvoke(sender, value);
 				}
 

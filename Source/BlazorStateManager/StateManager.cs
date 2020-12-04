@@ -5,13 +5,15 @@ using System.Threading.Tasks;
 
 namespace BlazorStateManager
 {
-	public class StateService : IStateService
+	public class StateManager : IStateManager
 	{
 		protected IStoragePersistance Store { get; }
+		public IMediator Mediator { get; }
 
-		public StateService(IStoragePersistance store)
+		public StateManager(IStoragePersistance store, IMediator mediator)
 		{
 			Store = store;
+			Mediator = mediator;
 		}
 
 		public async ValueTask<T> GetState<T>() where T : class, new()
@@ -31,6 +33,11 @@ namespace BlazorStateManager
 		public ValueTask CommitState<T>(string name, T value)
 		{
 			return Store.Store(name, value);
+		}
+
+		public async ValueTask OnCommit<T>(object subscriber, Action<object, T> handler)
+		{
+			await Mediator.Subscribe<T>(subscriber, handler);
 		}
 	}
 }

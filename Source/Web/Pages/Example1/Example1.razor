@@ -1,0 +1,58 @@
+@page "/example1"
+@inject IStateManager State
+@inject IMediator EventAggragator
+@inject ISnackbar Snackbar
+
+<h1>Example</h1>
+
+<MudText>@BoundText</MudText>
+
+<MudForm>
+	<MudCard Class="col-4">
+		<MudCardContent>
+			<MudTextField @bind-Value="CurrentUser.FirstName" Label="First Name"></MudTextField>
+
+			<MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="ButtonClicked" Class="mt-3">Save</MudButton>
+		</MudCardContent>
+	</MudCard>
+</MudForm>
+
+
+
+
+@code
+{
+	public User CurrentUser { get; set; } = new User();
+	public int Count { get; set; }
+	public string BoundText { get; set; }
+
+	protected override async Task OnParametersSetAsync()
+	{
+		CurrentUser = await State.GetState<User>();
+
+		await EventAggragator.Subscribe(this, "Click", (object sender, string value) =>
+		{
+			BoundText = value;
+			StateHasChanged();
+		});
+
+		await EventAggragator.Subscribe<User>(this, (object sender, User user) =>
+		{
+			CurrentUser = user;
+			StateHasChanged();
+		});
+
+		await base.OnParametersSetAsync();
+	}
+
+	protected async Task ButtonClicked()
+	{
+		await EventAggragator.Publish(this, "Click", $"Button Clicked {++Count} times!");
+
+		await State.CommitState<User>(CurrentUser);
+		await EventAggragator.Publish<User>(this, CurrentUser);
+
+		Snackbar.Add("Save Completed!", Severity.Info);
+	}
+
+}

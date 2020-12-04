@@ -1,3 +1,4 @@
+using BlazorStateManager;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,8 +28,24 @@ namespace Web
 
 			// MudBlazor Services
 			builder.Services.AddMudBlazorDialog();
-			builder.Services.AddMudBlazorSnackbar();
 			builder.Services.AddMudBlazorResizeListener();
+			builder.Services.AddMudBlazorSnackbar(config =>
+			{
+				config.PositionClass = Defaults.Classes.Position.BottomRight;
+
+				config.PreventDuplicates = true;
+				config.NewestOnTop = false;
+				config.ShowCloseIcon = true;
+				config.VisibleStateDuration = 5000;
+				config.HideTransitionDuration = 500;
+				config.ShowTransitionDuration = 500;
+				config.SnackbarVariant = Variant.Filled;
+			});
+
+			// Register State Service -- TODO: Make this a single extension in the BlazorZtateManager project
+			builder.Services.AddSingleton<IMediator, BlazorMediator>();
+			builder.Services.AddSingleton<IStoragePersistance, LocalStoragePersistance>();
+			builder.Services.AddScoped<IStateManager, StateManager>();
 
 			return builder;
 		}

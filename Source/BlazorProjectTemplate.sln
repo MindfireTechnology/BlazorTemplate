@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "WebApi\WebApi.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web", "Web\Web.csproj", "{609B851A-BA3F-43A5-A1E0-75DB7566F143}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorStateManager", "BlazorStateManager\BlazorStateManager.csproj", "{7B20EEF5-89ED-4788-8F41-93C285B87C83}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorStateManager", "BlazorStateManager\BlazorStateManager.csproj", "{7B20EEF5-89ED-4788-8F41-93C285B87C83}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

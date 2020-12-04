@@ -1,6 +1,12 @@
 @inherits LayoutComponentBase
+@inject IStateManager State
+@inject IMediator EventAggragator
+@using Web.Pages.Example1
+
+@*Documentation for Mud Controls is here: https://mudblazor.com/*@
+
 @*MudBlazor Components Needed at the Root*@
-<MudThemeProvider />
+<MudThemeProvider Theme="@CurrentTheme" />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
@@ -8,20 +14,84 @@
 <MudLayout>
 	<MudAppBar Elevation="1">
 		<MudIconButton Icon="@Icons.Material.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-		<MudText Typo="Typo.h5" Class="ml-3">Application Title</MudText>
+		<MudText Typo="Typo.h5" Class="ml-3">Application Title - @BannerText</MudText>
 		<MudAppBarSpacer />
+		<MudIconButton Icon="@Icons.Material.SyncAlt" Title="Switch Theme" OnClick="SwitchTheme" />
 		<MudIconButton Icon="@Icons.Material.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
+		<MudText>@CurrentUser.FirstName</MudText>
 	</MudAppBar>
 	<MudDrawer Open="DrawerOpen" Clipped="true" Elevation="2">
 		<NavMenu />
 	</MudDrawer>
 	<MudMainContent>
-		@Body
+		<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-8">
+			@Body
+		</MudContainer>
 	</MudMainContent>
 </MudLayout>
 
-@code {
-	protected bool DrawerOpen { get; set; }  = true;
+@code
+{
+	protected bool DrawerOpen { get; set; } = true;
+	protected string BannerText { get; set; }
+	public User CurrentUser { get; set; } = new User();
+
+	public MudTheme CurrentTheme { get; set; } = new MudTheme();
+
+
+	protected MudTheme DefaultTheme = new MudTheme();
+	protected MudTheme DarkTheme = new MudTheme
+	{
+		Palette = new Palette()
+		{
+			Black = "#27272f",
+			Background = "#32333d",
+			BackgroundGrey = "#27272f",
+			Surface = "#373740",
+			DrawerBackground = "#27272f",
+			DrawerText = "rgba(255,255,255, 0.50)",
+			DrawerIcon = "rgba(255,255,255, 0.50)",
+			AppbarBackground = "#27272f",
+			AppbarText = "rgba(255,255,255, 0.70)",
+			TextPrimary = "rgba(255,255,255, 0.70)",
+			TextSecondary = "rgba(255,255,255, 0.50)",
+			ActionDefault = "#adadb1",
+			ActionDisabled = "rgba(255,255,255, 0.26)",
+			ActionDisabledBackground = "rgba(255,255,255, 0.12)"
+		}
+	};
+
+
+	protected override async Task OnParametersSetAsync()
+	{
+		CurrentUser = await State.GetState<User>();
+		await base.OnParametersSetAsync();
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		await EventAggragator.Subscribe(this, "Click", (object sender, string value) =>
+		{
+			BannerText = value;
+			StateHasChanged();
+		});
+
+		await EventAggragator.Subscribe<User>(this, (object sender, User user) =>
+		{
+			CurrentUser = user;
+			StateHasChanged();
+		});
+
+		await base.OnInitializedAsync();
+	}
+
+	void SwitchTheme()
+	{
+		if (CurrentTheme == DarkTheme)
+			CurrentTheme = DefaultTheme;
+		else
+			CurrentTheme = DarkTheme;
+	}
 
 	void DrawerToggle()
 	{

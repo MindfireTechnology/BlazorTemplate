@@ -1,4 +1,4 @@
-﻿@page "/fetchdata"
+@page "/fetchdata"
 @inject HttpClient Http
 
 <h1>Weather forecast</h1>
@@ -11,7 +11,23 @@
 }
 else
 {
-    <table class="table">
+
+    <MudTable Items="forecasts" Hover="true" Breakpoint="Breakpoint.Sm">
+		<HeaderContent>
+			<MudTh>Date</MudTh>
+			<MudTh>Temp. (C)</MudTh>
+			<MudTh>Temp. (F)</MudTh>
+			<MudTh>Summary</MudTh>
+		</HeaderContent>
+		<RowTemplate Context="forecast">
+			<MudTh>@forecast.Date.ToShortDateString()</MudTh>
+			<MudTh>@forecast.TemperatureC</MudTh>
+			<MudTh>@forecast.TemperatureF</MudTh>
+			<MudTh>@forecast.Summary</MudTh>
+		</RowTemplate>
+    </MudTable>
+
+    @*<table class="table">
         <thead>
             <tr>
                 <th>Date</th>
@@ -31,10 +47,11 @@ else
                 </tr>
             }
         </tbody>
-    </table>
+    </table>*@
 }
 
-@code {
+@code
+{
     private WeatherForecast[] forecasts;
 
     protected override async Task OnInitializedAsync()
