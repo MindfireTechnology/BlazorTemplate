@@ -9,6 +9,7 @@ namespace BlazorStateManager
 		ValueTask CommitState<T>(T value);
 		ValueTask<T> GetState<T>() where T : class, new();
 
-		ValueTask OnCommit<T>(object subscriber, Action<object, T> handler);
+		ValueTask OnCommitted<T>(object subscriber, Action<object, T> handler);
+		ValueTask OnCommitted<T>(object subscriber, string topic, Action<object, T> handler);
 	}
 }

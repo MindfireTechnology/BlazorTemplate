@@ -25,19 +25,26 @@ namespace BlazorStateManager
 				return result;
 		}
 
-		public ValueTask CommitState<T>(T value)
+		public async ValueTask CommitState<T>(T value)
 		{
-			return CommitState(typeof(T).FullName, value);
+			await CommitState(typeof(T).FullName, value);
+			await Mediator.Publish<T>(this, value);
 		}
 
-		public ValueTask CommitState<T>(string name, T value)
+		public async ValueTask CommitState<T>(string name, T value)
 		{
-			return Store.Store(name, value);
+			await Store.Store(name, value);
+			await Mediator.Publish<T>(this, value, name);
 		}
 
-		public async ValueTask OnCommit<T>(object subscriber, Action<object, T> handler)
+		public async ValueTask OnCommitted<T>(object subscriber, Action<object, T> handler)
 		{
 			await Mediator.Subscribe<T>(subscriber, handler);
+		}
+
+		public async ValueTask OnCommitted<T>(object subscriber, string topic, Action<object, T> handler)
+		{
+			await Mediator.Subscribe<T>(subscriber, topic, handler);
 		}
 	}
 }
