@@ -42,7 +42,7 @@ namespace Web
 				config.SnackbarVariant = Variant.Filled;
 			});
 
-			// Register State Service -- TODO: Make this a single extension in the BlazorZtateManager project
+			// Register State Service -- TODO: Make this a single extension in the BlazorStateManager project
 			builder.Services.AddSingleton<IMediator, BlazorMediator>();
 			builder.Services.AddSingleton<IStoragePersistance, LocalStoragePersistance>();
 			builder.Services.AddScoped<IStateManager, StateManager>();

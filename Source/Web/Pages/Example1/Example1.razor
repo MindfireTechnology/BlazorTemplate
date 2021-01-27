@@ -1,6 +1,6 @@
 @page "/example1"
 @inject IStateManager State
-@inject IMediator EventAggragator
+@inject IMediator Eventor
 @inject ISnackbar Snackbar
 
 <h1>Example</h1>
@@ -14,6 +14,16 @@
 
 			<MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="ButtonClicked" Class="mt-3">Save</MudButton>
 		</MudCardContent>
+
+		
+		<!--
+
+		Like the example above, they see these new values when the "submit" button is clicked
+		-----
+		<address @bind-value="CurrentUser.Addresses" />
+
+		-->
+
 	</MudCard>
 </MudForm>
 
@@ -30,15 +40,15 @@
 	{
 		CurrentUser = await State.GetState<User>();
 
-		await EventAggragator.Subscribe(this, "Click", (object sender, string value) =>
+		await State.OnCommitted<User>(this, (sender, user) =>
 		{
-			BoundText = value;
+			CurrentUser = user;
 			StateHasChanged();
 		});
 
-		await EventAggragator.Subscribe<User>(this, (object sender, User user) =>
+		await Eventor.Subscribe(this, "Click", (object sender, string value) =>
 		{
-			CurrentUser = user;
+			BoundText = value;
 			StateHasChanged();
 		});
 
@@ -47,10 +57,10 @@
 
 	protected async Task ButtonClicked()
 	{
-		await EventAggragator.Publish(this, "Click", $"Button Clicked {++Count} times!");
+		await Eventor.Publish(this, "Click", $"Button Clicked {++Count} times!");
 
 		await State.CommitState<User>(CurrentUser);
-		await EventAggragator.Publish<User>(this, CurrentUser);
+		await Eventor.Publish<User>(this, CurrentUser);
 
 		Snackbar.Add("Save Completed!", Severity.Info);
 	}

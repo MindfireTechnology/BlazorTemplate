@@ -8,6 +8,9 @@ namespace BlazorStateManager
 {
 	public interface IMediator
 	{
+		// Observalbe?
+		// Extension Methods To Assist?
+
 		ValueTask Subscribe(object subscriber, string topic, Action<object, string> handler);
 		ValueTask Subscribe<T>(object subscriber, Action<object, T> handler);
 		ValueTask Subscribe<T>(object subscriber, string topic, Action<object, T> handler);

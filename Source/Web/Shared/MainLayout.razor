@@ -1,6 +1,6 @@
 @inherits LayoutComponentBase
 @inject IStateManager State
-@inject IMediator EventAggragator
+@inject IMediator Eventor
 @using Web.Pages.Example1
 
 @*Documentation for Mud Controls is here: https://mudblazor.com/*@
@@ -61,22 +61,29 @@
 		}
 	};
 
-
+	/// <summary>
+	/// This event happens each time this component is re-used
+	/// </summary>
+	/// <returns></returns>
 	protected override async Task OnParametersSetAsync()
 	{
 		CurrentUser = await State.GetState<User>();
 		await base.OnParametersSetAsync();
 	}
 
+	/// <summary>
+	/// This event only happens once
+	/// </summary>
+	/// <returns></returns>
 	protected override async Task OnInitializedAsync()
 	{
-		await EventAggragator.Subscribe(this, "Click", (object sender, string value) =>
+		await Eventor.Subscribe(this, "Click", (object sender, string value) =>
 		{
 			BannerText = value;
 			StateHasChanged();
 		});
 
-		await EventAggragator.Subscribe<User>(this, (object sender, User user) =>
+		await State.OnCommitted<User>(this, (sender, user) =>
 		{
 			CurrentUser = user;
 			StateHasChanged();
