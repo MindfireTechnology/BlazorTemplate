@@ -5,97 +5,60 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BlazorStateManager
+namespace BlazorStateManager.Mediator
 {
 	public class BlazorMediator : IMediator
 	{
 		protected IList<TopicMap> Topics = new List<TopicMap>();
-
-		public ILogger<BlazorMediator> Logger { get; }
-
-		internal protected class TopicMap
-		{
-			public Type TopicType { get; set; }
-			public string TopicString { get; set; }
-			public virtual IList<SubscriberInfo> Subscribers { get; set; } = new List<SubscriberInfo>();
-		}
-
-		internal protected class SubscriberInfo
-		{
-			public WeakReference Subscriber { get; set; }
-			public Delegate Action { get; set; }
-
-			public SubscriberInfo() { }
-
-			public SubscriberInfo(object subscriber, Delegate action)
-			{
-				Subscriber = new WeakReference(subscriber);
-				Action = action;
-			}
-		}
+		protected ILogger<BlazorMediator> Logger { get; }
 
 		public BlazorMediator(ILogger<BlazorMediator> logger)
 		{
 			Logger = logger;
 		}
 
-		public async ValueTask Subscribe(object subscriber, string topic, Action<object, string> handler)
-		{
-			Add(null, topic, new SubscriberInfo(subscriber, handler));
-			Logger?.LogInformation($"Subscription received from '{subscriber?.GetHashCode()}:{subscriber}' For Topic '{topic}'");
-		}
 
-		public async ValueTask Subscribe<T>(object subscriber, Action<object, T> handler)
+		public void Subscribe<T>(object subscriber, AsyncHandler<T> handler)
 		{
-			Add(typeof(T), null, new SubscriberInfo(subscriber, handler));
+			Add(typeof(T), null, new SubscriberInfo(subscriber, typeof(T), handler));
 			Logger?.LogInformation($"Subscription received from '{subscriber?.GetHashCode()}:{subscriber}' For Type '{typeof(T).Name}'");
 		}
 
-		public async ValueTask Subscribe<T>(object subscriber, string topic, Action<object, T> handler)
+		public void Subscribe<T>(object subscriber, string topic, AsyncHandler<T> handler)
 		{
-			Add(typeof(T), topic, new SubscriberInfo(subscriber, handler));
+			Add(typeof(T), topic, new SubscriberInfo(subscriber, typeof(T), handler));
 			Logger?.LogInformation($"Subscription received from '{subscriber?.GetHashCode()}:{subscriber}' For Type '{typeof(T).Name}' / Topic '{topic}'");
 		}
 
 
-		public async ValueTask Publish(object sender, string topic, string value)
-		{
-			Logger?.LogInformation($"Publish received from '{sender?.GetHashCode()}:{sender}' For Topic '{topic}'");
-			await PublishInternal(null, topic, sender, value);
-		}
 
-		public async ValueTask Publish<T>(object sender, T value)
+		public async Task Publish<T>(object sender, T value)
 		{
 			Logger?.LogInformation($"Publish received from '{sender?.GetHashCode()}:{sender}' For Type '{typeof(T).Name}'");
 			await PublishInternal(typeof(T), null, sender, value);
 		}
 
-		public async ValueTask Publish<T>(object sender, T value, string topic)
+		public async Task Publish<T>(object sender, string topic, T value)
 		{
 			Logger?.LogInformation($"Publish received from '{sender?.GetHashCode()}:{sender}' For Type '{typeof(T).Name}' / Topic '{topic}'");
 			await PublishInternal(typeof(T), topic, sender, value);
 		}
 
 
-		public async ValueTask UnSubscribe(object subscriber, string topic)
-		{
-			Logger?.LogInformation($"Unsubscribe received from '{subscriber?.GetHashCode()}:{subscriber}' Topic '{topic}'");
-			await UnSubscribeInternal(null, topic, subscriber);
-		}
 
-		public async ValueTask UnSubscribe<T>(object subscriber)
+		public void UnSubscribe<T>(object subscriber)
 		{
 			Logger?.LogInformation($"Unsubscribe received from '{subscriber?.GetHashCode()}:{subscriber}' For Type '{typeof(T).Name}'");
-			await UnSubscribeInternal(typeof(T), null, subscriber);
+			UnSubscribeInternal(typeof(T), null, subscriber);
 		}
 
-		public async ValueTask UnSubscribe<T>(object subscriber, string topic)
+		public void UnSubscribe<T>(object subscriber, string topic)
 		{
 			Logger?.LogInformation($"Unsubscribe received from '{subscriber?.GetHashCode()}:{subscriber}' For Type '{typeof(T).Name}' / Topic '{topic}'");
-			await UnSubscribeInternal(typeof(T), topic, subscriber);
+			UnSubscribeInternal(typeof(T), topic, subscriber);
 		}
 
-		public async ValueTask UnSubscribeAll(object subscriber)
+		public void UnSubscribeAll(object subscriber)
 		{
 			Logger?.LogInformation($"Unsubscribe All received from '{subscriber?.GetHashCode()}:{subscriber}'");
 			foreach (var topicMap in Topics)
@@ -107,7 +70,7 @@ namespace BlazorStateManager
 		}
 
 
-		protected void Add(Type type, string topic, SubscriberInfo subscriberInfo)
+		protected virtual void Add(Type type, string topic, SubscriberInfo subscriberInfo)
 		{
 			var topicMap = Topics.SingleOrDefault(n => n.TopicString == topic && n.TopicType == type);
 
@@ -116,7 +79,7 @@ namespace BlazorStateManager
 				topicMap = new TopicMap
 				{
 					TopicString = topic,
-					TopicType = type
+					TopicType = type,
 				};
 
 				Topics.Add(topicMap);
@@ -125,9 +88,11 @@ namespace BlazorStateManager
 			topicMap.Subscribers.Add(subscriberInfo);
 		}
 
-		protected virtual async ValueTask PublishInternal(Type T, string topicString, object sender, object value)
+		protected virtual async Task PublishInternal(Type T, string topicString, object sender, object value)
 		{
-			var topicList = Topics.Where(n => n.TopicString == topicString && ((T == null && n.TopicType == null) || n.TopicType.IsAssignableFrom(T)));
+			var topicList = Topics
+				.Where(n => n.TopicString == topicString &&
+				((T == null && n.TopicType == null) || n.TopicType.IsAssignableFrom(T)));
 
 			foreach (var topic in topicList)
 			{
@@ -138,9 +103,9 @@ namespace BlazorStateManager
 						deadSubscriberList.Value.Add(subscriber);
 
 					Logger?.LogInformation(
-						$"Invoking Topic '{(topic.TopicType == null ? string.Empty : $"Type: {topic.TopicType}")} {(string.IsNullOrWhiteSpace(topic.TopicString) ? string.Empty : topic.TopicString)}' '{subscriber?.GetHashCode()}:{subscriber}'");
-					
-					subscriber.Action.DynamicInvoke(sender, value);
+						$"Invoking Topic '{(topic.TopicType == null ? string.Empty : $"Type: {topic.TopicType}")} {(string.IsNullOrWhiteSpace(topic.TopicString) ? string.Empty : topic.TopicString)}' on '{subscriber?.GetHashCode()}:{subscriber}'");
+
+					await (Task)subscriber.Action.DynamicInvoke(sender, value);
 				}
 
 				if (deadSubscriberList.IsValueCreated)
@@ -161,7 +126,7 @@ namespace BlazorStateManager
 			}
 		}
 
-		protected virtual async ValueTask UnSubscribeInternal(Type type, string topic, object subscriber)
+		protected virtual void UnSubscribeInternal(Type type, string topic, object subscriber)
 		{
 			var topicMap = Topics
 				.SingleOrDefault(n => (n.TopicString == topic) && (n.TopicType == type));
@@ -174,5 +139,30 @@ namespace BlazorStateManager
 					.ForEach(n => topicMap.Subscribers.Remove(n));
 			}
 		}
+
+
+		internal protected class TopicMap
+		{
+			public Type TopicType { get; set; }
+			public string TopicString { get; set; }
+			public virtual IList<SubscriberInfo> Subscribers { get; set; } = new List<SubscriberInfo>();
+		}
+
+		internal protected class SubscriberInfo
+		{
+			public WeakReference Subscriber { get; set; }
+			public Delegate Action { get; set; }
+			public Type DelegateParameterType { get; set; }
+
+			public SubscriberInfo() { }
+
+			public SubscriberInfo(object subscriber, Type delegateParameterType, Delegate action)
+			{
+				Subscriber = new WeakReference(subscriber);
+				DelegateParameterType = delegateParameterType;
+				Action = action;
+			}
+		}
+
 	}
 }

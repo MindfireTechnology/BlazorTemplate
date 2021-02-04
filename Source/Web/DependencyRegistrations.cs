@@ -1,4 +1,7 @@
 using BlazorStateManager;
+using BlazorStateManager.Mediator;
+using BlazorStateManager.State;
+using BlazorStateManager.StoragePersistance;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -42,10 +45,7 @@ namespace Web
 				config.SnackbarVariant = Variant.Filled;
 			});
 
-			// Register State Service -- TODO: Make this a single extension in the BlazorStateManager project
-			builder.Services.AddSingleton<IMediator, BlazorMediator>();
-			builder.Services.AddSingleton<IStoragePersistance, LocalStoragePersistance>();
-			builder.Services.AddScoped<IStateManager, StateManager>();
+			builder.Services.RegisterStateManagerServices();
 
 			return builder;
 		}

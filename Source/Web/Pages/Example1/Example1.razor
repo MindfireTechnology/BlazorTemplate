@@ -40,16 +40,19 @@
 	{
 		CurrentUser = await State.GetState<User>();
 
-		await State.OnCommitted<User>(this, (sender, user) =>
+		State.OnCommitted<User>(this, (sender, user) =>
 		{
 			CurrentUser = user;
 			StateHasChanged();
+			return Task.CompletedTask;
 		});
 
-		await Eventor.Subscribe(this, "Click", (object sender, string value) =>
+
+		Eventor.Subscribe(this, "Click", (object sender, string value) =>
 		{
 			BoundText = value;
 			StateHasChanged();
+			return Task.CompletedTask;
 		});
 
 		await base.OnParametersSetAsync();

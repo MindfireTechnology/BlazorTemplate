@@ -5,8 +5,11 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
 
-namespace BlazorStateManager
+namespace BlazorStateManager.StoragePersistance
 {
+	/// <summary>
+	/// Stores values in the browsers local storage
+	/// </summary>
 	public class LocalStoragePersistance : IStoragePersistance
 	{
 		protected IJSRuntime Runtime { get; }

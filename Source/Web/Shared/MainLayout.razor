@@ -77,16 +77,18 @@
 	/// <returns></returns>
 	protected override async Task OnInitializedAsync()
 	{
-		await Eventor.Subscribe(this, "Click", (object sender, string value) =>
+		Eventor.Subscribe(this, "Click", (object sender, string value) =>
 		{
 			BannerText = value;
 			StateHasChanged();
+			return Task.CompletedTask;
 		});
 
-		await State.OnCommitted<User>(this, (sender, user) =>
+		State.OnCommitted<User>(this, (sender, user) =>
 		{
 			CurrentUser = user;
 			StateHasChanged();
+			return Task.CompletedTask;
 		});
 
 		await base.OnInitializedAsync();
