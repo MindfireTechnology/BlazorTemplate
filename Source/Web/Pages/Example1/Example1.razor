@@ -1,4 +1,6 @@
 @page "/example1"
+@using WebApi.Models
+@inject HttpClient Http
 @inject IStateManager State
 @inject IMediator Eventor
 @inject ISnackbar Snackbar
@@ -10,25 +12,13 @@
 <MudForm>
 	<MudCard Class="col-4">
 		<MudCardContent>
-			<MudTextField @bind-Value="CurrentUser.FirstName" Label="First Name"></MudTextField>
-
-			<MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="ButtonClicked" Class="mt-3">Save</MudButton>
+			<MudTextField @bind-Value="CurrentUser.UserName" Label="Username"></MudTextField>
+			<MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="ButtonClicked" Class="mt-3">Get</MudButton>
+			<MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="ResetClicked" Class="mt-3">Reset</MudButton>
 		</MudCardContent>
-
-		
-		<!--
-
-		Like the example above, they see these new values when the "submit" button is clicked
-		-----
-		<address @bind-value="CurrentUser.Addresses" />
-
-		-->
-
 	</MudCard>
+	<UserAddress @bind-Addresses="CurrentUser.Addresses" />
 </MudForm>
-
-
-
 
 @code
 {
@@ -47,11 +37,16 @@
 			return Task.CompletedTask;
 		});
 
-
 		Eventor.Subscribe(this, "Click", (object sender, string value) =>
 		{
 			BoundText = value;
 			StateHasChanged();
+			return Task.CompletedTask;
+		});
+
+		Eventor.Subscribe<string>(this, "AddressUpdate", (sender, value) =>
+		{
+			Snackbar.Add(value, Severity.Info);
 			return Task.CompletedTask;
 		});
 
@@ -60,12 +55,21 @@
 
 	protected async Task ButtonClicked()
 	{
-		await Eventor.Publish(this, "Click", $"Button Clicked {++Count} times!");
+		CurrentUser = await Http.GetFromJsonAsync<User>($"api/user/get/{CurrentUser.UserName}");
 
 		await State.CommitState<User>(CurrentUser);
 		await Eventor.Publish<User>(this, CurrentUser);
 
-		Snackbar.Add("Save Completed!", Severity.Info);
+		Snackbar.Add("Get Successful", Severity.Info);
 	}
 
+	protected async Task ResetClicked()
+	{
+		CurrentUser = new User();
+		await State.CommitState<User>(CurrentUser);
+		await Eventor.Publish<User>(this, CurrentUser);
+
+		Snackbar.Add("Reset Successful", Severity.Info);
+	}
 }
+

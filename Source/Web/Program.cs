@@ -1,9 +1,6 @@
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Web
@@ -16,7 +13,7 @@ namespace Web
 			builder.RootComponents.Add<App>("app");
 
 			builder.AddMisc();
-			builder.AddServices();
+			await builder.AddServicesAsync();
 
 			builder.Services.AddOidcAuthentication(options =>
 			{

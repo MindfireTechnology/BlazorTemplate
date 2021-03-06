@@ -5,6 +5,8 @@
 *.user
 *.userosscache
 *.sln.docstates
+!Mindfire.User
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 # Build results

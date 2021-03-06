@@ -1,0 +1,94 @@
+@using WebApi.Models
+@using System.Windows.Input
+@inject HttpClient Http
+@inject IMediator Eventor
+
+<MudTable Items="@Addresses" SortLabel="Sort By" Dense="@dense" Hover="@hover" Filter="new Func<Address,bool>(FilterFunc)" @bind-SelectedItem="selectedItem" CommitEditTooltip="Commit Edit" CommitEditCommand="@UpdateAddressCommand">
+	<ToolBarContent>
+		<MudText Typo="Typo.h6">Addresses</MudText>
+		<MudToolBarSpacer />
+		<MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Rounded.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+	</ToolBarContent>
+	<HeaderContent>
+		<MudTh><MudTableSortLabel SortBy="new Func<Address, object>(x=>x.AddressType)">Type</MudTableSortLabel></MudTh>
+		<MudTh>Street 1</MudTh>
+		<MudTh>Street 2</MudTh>
+		<MudTh>City</MudTh>
+		<MudTh>State</MudTh>
+		<MudTh>Zip</MudTh>
+	</HeaderContent>
+	<RowTemplate>
+		<MudTd DataLabel="Type">@context.AddressType</MudTd>
+		<MudTd DataLabel="Street 1">@context.Street1</MudTd>
+		<MudTd DataLabel="Street 2">@context.Street2</MudTd>
+		<MudTd DataLabel="City">@context.City</MudTd>
+		<MudTd DataLabel="State">@context.State</MudTd>
+		<MudTd DataLabel="Zip">@context.Zip</MudTd>
+	</RowTemplate>
+	<RowEditingTemplate>
+		<MudTd>
+			<MudTextField @bind-Value="@context.AddressType" Required />
+		</MudTd>
+		<MudTd>
+			<MudTextField @bind-Value="@context.Street1" Required />
+		</MudTd>
+		<MudTd>
+			<MudTextField @bind-Value="@context.Street2" Required />
+		</MudTd>
+		<MudTd>
+			<MudTextField @bind-Value="@context.City" Required />
+		</MudTd>
+		<MudTd>
+			<MudTextField @bind-Value="@context.State" Required />
+		</MudTd>
+		<MudTd>
+			<MudTextField @bind-Value="@context.Zip" Required />
+		</MudTd>
+	</RowEditingTemplate>
+	<PagerContent>
+		<MudTablePager />
+	</PagerContent>
+</MudTable>
+<MudSwitch @bind-Checked="@hover" Color="Color.Primary">Hover</MudSwitch>
+<MudSwitch @bind-Checked="@dense" Color="Color.Secondary">Dense</MudSwitch>
+<MudText Inline="true">Selected: @selectedItem?.Street1</MudText>
+
+@code {
+	public ICommand UpdateAddressCommand;
+
+	[Parameter]
+	public List<Address> Addresses { get; set; } = new List<Address>();
+
+	[Parameter]
+	public EventCallback<List<Address>> AddressesChanged { get; set; }
+
+	private bool dense = false;
+	private bool hover = true;
+	private string searchString = "";
+	private Address selectedItem = null;
+
+	protected bool FilterFunc(Address address)
+	{
+		if (string.IsNullOrWhiteSpace(searchString))
+			return true;
+		if ($"{address.AddressType} {address.Street1} {address.Street2} {address.City} {address.State} {address.Zip}".Contains(searchString))
+			return true;
+		return false;
+	}
+
+	protected override void OnInitialized()
+	{
+		base.OnInitialized();
+		UpdateAddressCommand = new RelayCommand(CommitAddressEdit);
+	}
+
+	protected async void CommitAddressEdit(object args)
+	{
+		var updated = args as Address;
+		await Http.PutAsJsonAsync($"api/user/address/update", updated);
+
+		await AddressesChanged.InvokeAsync(Addresses);
+
+		await Eventor.Publish<string>(this, "AddressUpdate", "Address successfully updated.");
+	}
+}

@@ -1,8 +1,7 @@
 @inherits LayoutComponentBase
+@using WebApi.Models
 @inject IStateManager State
 @inject IMediator Eventor
-@using Web.Pages.Example1
-
 @*Documentation for Mud Controls is here: https://mudblazor.com/*@
 
 @*MudBlazor Components Needed at the Root*@
@@ -10,14 +9,13 @@
 <MudDialogProvider />
 <MudSnackbarProvider />
 
-
 <MudLayout>
 	<MudAppBar Elevation="1">
-		<MudIconButton Icon="@Icons.Material.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+		<MudIconButton Icon="@Icons.Material.Rounded.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
 		<MudText Typo="Typo.h5" Class="ml-3">Application Title - @BannerText</MudText>
 		<MudAppBarSpacer />
-		<MudIconButton Icon="@Icons.Material.SyncAlt" Title="Switch Theme" OnClick="SwitchTheme" />
-		<MudIconButton Icon="@Icons.Material.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
+		<MudIconButton Icon="@Icons.Material.Rounded.SyncAlt" Title="Switch Theme" OnClick="SwitchTheme" />
+		<MudIconButton Icon="@Icons.Material.Rounded.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
 		<MudText>@CurrentUser.FirstName</MudText>
 	</MudAppBar>
 	<MudDrawer Open="DrawerOpen" Clipped="true" Elevation="2">
@@ -37,7 +35,6 @@
 	public User CurrentUser { get; set; } = new User();
 
 	public MudTheme CurrentTheme { get; set; } = new MudTheme();
-
 
 	protected MudTheme DefaultTheme = new MudTheme();
 	protected MudTheme DarkTheme = new MudTheme
