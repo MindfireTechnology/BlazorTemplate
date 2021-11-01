@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mindfire.User.Implementatio
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi.Models", "WebApi.Models\WebApi.Models.csproj", "{08E2FDAF-0717-40BD-98DC-29E6959BC39B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Server", "Web.Server\Web.Server.csproj", "{2EEA3865-3B87-4BA3-8F31-4C74580F6683}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,10 @@ Global
 		{08E2FDAF-0717-40BD-98DC-29E6959BC39B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{08E2FDAF-0717-40BD-98DC-29E6959BC39B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{08E2FDAF-0717-40BD-98DC-29E6959BC39B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2EEA3865-3B87-4BA3-8F31-4C74580F6683}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EEA3865-3B87-4BA3-8F31-4C74580F6683}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EEA3865-3B87-4BA3-8F31-4C74580F6683}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EEA3865-3B87-4BA3-8F31-4C74580F6683}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
