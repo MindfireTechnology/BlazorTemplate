@@ -13,6 +13,8 @@ namespace Web
 			var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
 			builder.AddMisc();
+			//builder.Services.AddAuthorizationCore();
+
 			await builder.AddServicesAsync();
 
 			builder.Services.AddOidcAuthentication(options =>
@@ -21,6 +23,8 @@ namespace Web
 				// For more information, see https://aka.ms/blazor-standalone-auth
 				builder.Configuration.Bind("Local", options.ProviderOptions);
 			});
+
+			
 
 			await builder.Build().RunAsync();
 		}
