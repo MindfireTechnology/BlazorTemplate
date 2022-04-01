@@ -1,32 +1,18 @@
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using System.Threading.Tasks;
+using Web;
 
-namespace Web
+var builder = WebAssemblyHostBuilder.CreateDefault(args);
+//builder.RootComponents.Add<App>("#app");
+builder.RootComponents.Add<HeadOutlet>("head::after");
+
+builder.AddServices();
+
+builder.Services.AddOidcAuthentication(options =>
 {
-	public class Program
-	{
-		public static async Task Main(string[] args)
-		{
-			var builder = WebAssemblyHostBuilder.CreateDefault(args);
+	// Configure your authentication provider options here.
+	// For more information, see https://aka.ms/blazor-standalone-auth
+	builder.Configuration.Bind("Local", options.ProviderOptions);
+});
 
-			builder.AddMisc();
-			//builder.Services.AddAuthorizationCore();
-
-			await builder.AddServicesAsync();
-
-			builder.Services.AddOidcAuthentication(options =>
-			{
-				// Configure your authentication provider options here.
-				// For more information, see https://aka.ms/blazor-standalone-auth
-				builder.Configuration.Bind("Local", options.ProviderOptions);
-			});
-
-			
-
-			await builder.Build().RunAsync();
-		}
-	}
-}
+await builder.Build().RunAsync();

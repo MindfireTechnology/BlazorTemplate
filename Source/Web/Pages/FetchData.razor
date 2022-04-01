@@ -1,5 +1,7 @@
 @page "/fetchdata"
-@inject HttpClient Http
+@inject ClientSettings ClientSettings
+
+<PageTitle>Weather forecast</PageTitle>
 
 <h1>Weather forecast</h1>
 
@@ -7,12 +9,11 @@
 
 @if (forecasts == null)
 {
-    <p><em>Loading...</em></p>
+	<p><em>Loading...</em></p>
 }
 else
 {
-
-    <MudTable Items="forecasts" Hover="true" Breakpoint="Breakpoint.Sm">
+	<MudTable Items="forecasts" Hover="true" Breakpoint="Breakpoint.Sm">
 		<HeaderContent>
 			<MudTh>Date</MudTh>
 			<MudTh>Temp. (C)</MudTh>
@@ -25,16 +26,18 @@ else
 			<MudTh>@forecast.TemperatureF</MudTh>
 			<MudTh>@forecast.Summary</MudTh>
 		</RowTemplate>
-    </MudTable>
+	</MudTable>
 }
 
-@code
-{
-	private WeatherForecast[] forecasts;
+@code {
+	private WeatherForecast[]? forecasts;
 
 	protected override async Task OnInitializedAsync()
 	{
-		forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>($"api/weatherforecast/get");
+		forecasts = await ClientSettings.ApiUrl
+		.AppendPathSegments("api", "WeatherForecast", "get")
+		.GetAsync()
+		.ReceiveJson<WeatherForecast[]>();
 	}
 
 	public class WeatherForecast
@@ -43,7 +46,7 @@ else
 
 		public int TemperatureC { get; set; }
 
-		public string Summary { get; set; }
+		public string? Summary { get; set; }
 
 		public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 	}

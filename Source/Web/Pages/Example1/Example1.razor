@@ -1,6 +1,6 @@
 @page "/example1"
 @using WebApi.Models
-@inject HttpClient Http
+@inject ClientSettings ClientSettings
 @inject IStateManager State
 @inject IMediator Eventor
 @inject ISnackbar Snackbar
@@ -9,22 +9,25 @@
 
 <MudText>@BoundText</MudText>
 
-<MudForm>
-	<MudCard Class="col-4">
-		<MudCardContent>
-			<MudTextField @bind-Value="CurrentUser.UserName" Label="Username"></MudTextField>
-			<MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="ButtonClicked" Class="mt-3">Get</MudButton>
-			<MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="ResetClicked" Class="mt-3">Reset</MudButton>
-		</MudCardContent>
-	</MudCard>
-	<UserAddress @bind-Addresses="CurrentUser.Addresses" />
-</MudForm>
+@if(CurrentUser != null)
+{
+	<MudForm>
+		<MudCard Class="col-4">
+			<MudCardContent>
+				<MudTextField @bind-Value="CurrentUser.UserName" Label="Username"></MudTextField>
+				<MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="ButtonClicked" Class="mt-3">Get</MudButton>
+				<MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="ResetClicked" Class="mt-3">Reset</MudButton>
+			</MudCardContent>
+		</MudCard>
+		<UserAddress @bind-Addresses="CurrentUser.Addresses" />
+	</MudForm>
+}
 
 @code
 {
-	public User CurrentUser { get; set; } = new User();
+	public User? CurrentUser { get; set; }
 	public int Count { get; set; }
-	public string BoundText { get; set; }
+	public string? BoundText { get; set; }
 
 	protected override async Task OnParametersSetAsync()
 	{
@@ -37,7 +40,7 @@
 			return Task.CompletedTask;
 		});
 
-		Eventor.Subscribe(this, "Click", (object sender, string value) =>
+		Eventor.Subscribe(this, "Click", (object sender, string? value) =>
 		{
 			BoundText = value;
 			StateHasChanged();
@@ -55,7 +58,10 @@
 
 	protected async Task ButtonClicked()
 	{
-		CurrentUser = await Http.GetFromJsonAsync<User>($"api/user/get/{CurrentUser.UserName}");
+		CurrentUser = await ClientSettings.ApiUrl
+		.AppendPathSegments("api", "user", "get", CurrentUser?.UserName)
+		.GetAsync()
+		.ReceiveJson<User>();
 
 		await State.CommitState<User>(CurrentUser);
 		await Eventor.Publish<User>(this, CurrentUser);

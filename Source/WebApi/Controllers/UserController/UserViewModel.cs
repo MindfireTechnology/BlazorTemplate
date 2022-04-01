@@ -1,9 +1,8 @@
-namespace WebApi.Controllers.UserController
+namespace WebApi.Controllers.UserController;
+
+public record UserViewModel
 {
-	public class UserViewModel
-	{
-		public int? UserId { get; set; }
-		public string UserName { get; set; }
-		public string Email { get; set; }
-	}
+	public int? UserId { get; set; }
+	public string? UserName { get; set; }
+	public string? Email { get; set; }
 }

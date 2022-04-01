@@ -13,10 +13,10 @@
 	<MudAppBar Elevation="1">
 		<MudIconButton Icon="@Icons.Material.Rounded.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
 		<MudText Typo="Typo.h5" Class="ml-3">Application Title - @BannerText</MudText>
-		<MudAppBarSpacer />
+		<MudSpacer />
 		<MudIconButton Icon="@Icons.Material.Rounded.SyncAlt" Title="Switch Theme" OnClick="SwitchTheme" />
 		<MudIconButton Icon="@Icons.Material.Rounded.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
-		<MudText>@CurrentUser.FirstName</MudText>
+		<MudText>@CurrentUser?.FirstName</MudText>
 	</MudAppBar>
 	<MudDrawer Open="DrawerOpen" Clipped="true" Elevation="2">
 		<NavMenu />
@@ -31,8 +31,8 @@
 @code
 {
 	protected bool DrawerOpen { get; set; } = true;
-	protected string BannerText { get; set; }
-	public User CurrentUser { get; set; } = new User();
+	protected string? BannerText { get; set; }
+	public User? CurrentUser { get; set; }
 
 	public MudTheme CurrentTheme { get; set; } = new MudTheme();
 
@@ -74,7 +74,7 @@
 	/// <returns></returns>
 	protected override async Task OnInitializedAsync()
 	{
-		Eventor.Subscribe(this, "Click", (object sender, string value) =>
+		Eventor.Subscribe(this, "Click", (object sender, string? value) =>
 		{
 			BannerText = value;
 			StateHasChanged();

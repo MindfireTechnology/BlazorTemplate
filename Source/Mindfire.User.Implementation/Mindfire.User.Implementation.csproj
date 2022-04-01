@@ -1,18 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="10.1.1" />
-    <PackageReference Include="Mindfire.EFRepository" Version="2.0.0-alpha" />
+    <PackageReference Include="AutoMapper" Version="11.0.1" />
+    <PackageReference Include="Mindfire.EFRepository" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Data\Data.csproj" />
     <ProjectReference Include="..\Mindfire.User\Mindfire.User.csproj" />
-    <ProjectReference Include="..\WebApi.Models\WebApi.Models.csproj" />
   </ItemGroup>
 
 </Project>

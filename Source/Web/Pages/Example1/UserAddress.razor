@@ -1,12 +1,12 @@
 @using WebApi.Models
 @using System.Windows.Input
-@inject HttpClient Http
 @inject IMediator Eventor
+@inject ClientSettings ClientSettings
 
 <MudTable Items="@Addresses" SortLabel="Sort By" Dense="@dense" Hover="@hover" Filter="new Func<Address,bool>(FilterFunc)" @bind-SelectedItem="selectedItem" CommitEditTooltip="Commit Edit" CommitEditCommand="@UpdateAddressCommand">
 	<ToolBarContent>
 		<MudText Typo="Typo.h6">Addresses</MudText>
-		<MudToolBarSpacer />
+		<MudSpacer />
 		<MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Rounded.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
 	</ToolBarContent>
 	<HeaderContent>
@@ -54,7 +54,7 @@
 <MudText Inline="true">Selected: @selectedItem?.Street1</MudText>
 
 @code {
-	public ICommand UpdateAddressCommand;
+	public ICommand? UpdateAddressCommand;
 
 	[Parameter]
 	public List<Address> Addresses { get; set; } = new List<Address>();
@@ -65,7 +65,7 @@
 	private bool dense = false;
 	private bool hover = true;
 	private string searchString = "";
-	private Address selectedItem = null;
+	private Address? selectedItem = null;
 
 	protected bool FilterFunc(Address address)
 	{
@@ -79,13 +79,15 @@
 	protected override void OnInitialized()
 	{
 		base.OnInitialized();
-		UpdateAddressCommand = new RelayCommand(CommitAddressEdit);
+		UpdateAddressCommand = new RelayCommand(CommitAddressEdit, null);
 	}
 
-	protected async void CommitAddressEdit(object args)
+	protected async void CommitAddressEdit(object? args)
 	{
 		var updated = args as Address;
-		await Http.PutAsJsonAsync($"api/user/address/update", updated);
+		await ClientSettings.ApiUrl
+		.AppendPathSegments("api", "user", "address", "update")
+		.PutJsonAsync(updated);
 
 		await AddressesChanged.InvokeAsync(Addresses);
 

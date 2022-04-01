@@ -1,8 +1,6 @@
-namespace Web
+namespace Web;
+public record ClientSettings
 {
-	public class ClientSettings
-	{
-		public string ApiUrl { get; set; }
-		public int Timeout { get; set; }
-	}
+	public string? ApiUrl { get; set; }
+	public int Timeout { get; set; }
 }
