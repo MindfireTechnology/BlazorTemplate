@@ -51,12 +51,18 @@
           }
         }
     */
-	"MultiProjectConfigurations": {
-		"Web + Api": {
-			"Projects": {
-				"Web": {},
-				"WebApi": {}
-			}
-		}
-	}
+  "MultiProjectConfigurations": {
+    "Web + Api": {
+      "Projects": {
+        "Web": {},
+        "WebApi": {}
+      }
+    },
+    "WebServer + Api": {
+      "Projects": {
+        "Web.Server": {},
+        "WebApi": {}
+      }
+    }
+  }
 }
