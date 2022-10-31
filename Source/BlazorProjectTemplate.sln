@@ -17,7 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi.Models", "WebApi.Mod
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "WebApi\WebApi.csproj", "{92992FA6-4DE7-4A4C-9D21-C86E22566CC4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Server", "Web.Server\Web.Server.csproj", "{ADF53B6D-17C0-4EFF-8C66-F7D1DA43BDC4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web.Server", "Web.Server\Web.Server.csproj", "{ADF53B6D-17C0-4EFF-8C66-F7D1DA43BDC4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.WeatherForecast", "Web.WeatherForecast\Web.WeatherForecast.csproj", "{7C28CB89-F11F-46C6-A95F-DF49A74ABB7E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,6 +61,10 @@ Global
 		{ADF53B6D-17C0-4EFF-8C66-F7D1DA43BDC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ADF53B6D-17C0-4EFF-8C66-F7D1DA43BDC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ADF53B6D-17C0-4EFF-8C66-F7D1DA43BDC4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C28CB89-F11F-46C6-A95F-DF49A74ABB7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C28CB89-F11F-46C6-A95F-DF49A74ABB7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C28CB89-F11F-46C6-A95F-DF49A74ABB7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C28CB89-F11F-46C6-A95F-DF49A74ABB7E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

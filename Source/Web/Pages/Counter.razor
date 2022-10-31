@@ -2,16 +2,17 @@
 
 <PageTitle>Counter</PageTitle>
 
-<MudText>Current count: @currentCount</MudText>
+<MudText>Current count: @CurrentCount</MudText>
 
-<MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="IncrementCount">Click me</MudButton>
+<MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="@IncrementCount">Click me</MudButton>
 
 @code
 {
-    private int currentCount = 0;
+    protected int CurrentCount { get; set; }
 
-    private void IncrementCount()
+    private async Task IncrementCount()
     {
-        currentCount++;
+        CurrentCount++;
+        await InvokeAsync(StateHasChanged);
     }
 }

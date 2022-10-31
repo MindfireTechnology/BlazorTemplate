@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using MudBlazor;
 using MudBlazor.Services;
+using Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,7 +30,7 @@ builder.Services.AddMudServices(config =>
 });
 
 // register an HttpClient that points to itself
-builder.Services.AddSingleton<HttpClient>(sp =>
+builder.Services.AddSingleton(sp =>
 {
 	// Get the address that the app is currently running at
 	var server = sp.GetRequiredService<IServer>();
@@ -37,6 +38,10 @@ builder.Services.AddSingleton<HttpClient>(sp =>
 	string baseAddress = addressFeature.Addresses.First();
 	return new HttpClient { BaseAddress = new Uri(baseAddress) };
 });
+
+var clientSettings = new ClientSettings();
+builder.Configuration.GetSection(nameof(ClientSettings)).Bind(clientSettings);
+builder.Services.AddSingleton(clientSettings);
 
 var app = builder.Build();
 
