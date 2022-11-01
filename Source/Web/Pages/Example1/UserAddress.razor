@@ -2,7 +2,6 @@
 @using System.Windows.Input
 @inject IMediator Eventor
 @inject IUserService UserService
-@inject ClientSettings ClientSettings
 
 <MudTable Items="@Addresses" SortLabel="Sort By" Dense="@dense" Hover="@hover" Filter="new Func<Address,bool>(FilterFunc)" @bind-SelectedItem="selectedItem" CommitEditTooltip="Commit Edit" CommitEditCommand="@UpdateAddressCommand">
 	<ToolBarContent>

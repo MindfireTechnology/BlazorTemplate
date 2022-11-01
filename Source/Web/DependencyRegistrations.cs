@@ -58,12 +58,14 @@ public static class DependencyRegistrations
 			.ConfigureHttpClient(client =>
 			{
 				client.BaseAddress = new Uri(clientSettings.ApiUrl!);
+				client.Timeout = TimeSpan.FromSeconds(clientSettings.Timeout ?? 30);
 			});
 
 		builder.Services.AddRefitClient<IUserClient>()
 			.ConfigureHttpClient(client =>
 			{
 				client.BaseAddress = new Uri(clientSettings.ApiUrl!);
+				client.Timeout = TimeSpan.FromSeconds(clientSettings.Timeout ?? 30);
 			});
 
 		builder.Services.AddTransient<IWeatherForecastService, WeatherForecastService>();
