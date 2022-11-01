@@ -14,7 +14,6 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ConnectionStrings:DatabaseConnection": "Data Source=localhost; Initial Catalog=BlazorTemplate; Uid=sa; Pwd=H9.5EZvqF%Z/LG/R9)cK%^>kfy!+2[",
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "applicationUrl": "https://localhost:7065;http://localhost:5065",
@@ -25,7 +24,6 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ConnectionStrings:DatabaseConnection": "Data Source=localhost; Initial Catalog=BlazorTemplate; Uid=sa; Pwd=H9.5EZvqF%Z/LG/R9)cK%^>kfy!+2[",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },

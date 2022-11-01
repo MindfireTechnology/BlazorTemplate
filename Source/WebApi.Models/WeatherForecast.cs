@@ -1,4 +1,6 @@
-namespace Web.WeatherForecast;
+using System;
+
+namespace WebApi.Models;
 public record WeatherForecast
 {
 	public DateTime Date { get; set; }
@@ -6,6 +8,4 @@ public record WeatherForecast
 	public int TemperatureC { get; set; }
 
 	public string? Summary { get; set; }
-
-	public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 }

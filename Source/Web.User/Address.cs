@@ -1,4 +1,4 @@
-namespace WebApi.Models;
+namespace Web.User;
 
 public record Address
 {

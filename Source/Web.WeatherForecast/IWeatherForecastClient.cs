@@ -8,6 +8,6 @@ using Refit;
 namespace Web.WeatherForecast;
 public interface IWeatherForecastClient
 {
-	[Get("/api/WeatherForecast/get")]
+	[Get("/api/WeatherForecast/forecasts")]
 	public Task<IEnumerable<WeatherForecast>> GetForecasts();
 }

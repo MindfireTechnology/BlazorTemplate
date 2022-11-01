@@ -9,6 +9,12 @@ using System;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using Refit;
+using Web.WeatherForecast;
+using WebApi.Models;
+using Web.WeatherForecast.Services;
+using Web.User;
+using Web.User.Services;
 
 namespace Web;
 
@@ -47,6 +53,23 @@ public static class DependencyRegistrations
 		builder.Services.AddSingleton<IMediator, BlazorMediator>();
 		builder.Services.AddScoped<IStateManager, StateManager>();
 		builder.Services.AddScoped<IStoragePersistance, LocalStoragePersistance>();
+
+		builder.Services.AddRefitClient<IWeatherForecastClient>()
+			.ConfigureHttpClient(client =>
+			{
+				client.BaseAddress = new Uri(clientSettings.ApiUrl!);
+			});
+
+		builder.Services.AddRefitClient<IUserClient>()
+			.ConfigureHttpClient(client =>
+			{
+				client.BaseAddress = new Uri(clientSettings.ApiUrl!);
+			});
+
+		builder.Services.AddTransient<IWeatherForecastService, WeatherForecastService>();
+		builder.Services.AddTransient<IUserService, UserService>();
+
+		builder.Services.AddLogging();
 
 		return builder;
 	}

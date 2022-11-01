@@ -35,7 +35,7 @@ builder.Services.AddSingleton(sp =>
 	// Get the address that the app is currently running at
 	var server = sp.GetRequiredService<IServer>();
 	var addressFeature = server.Features.Get<IServerAddressesFeature>();
-	string baseAddress = addressFeature.Addresses.First();
+	string baseAddress = addressFeature?.Addresses?.First()!;
 	return new HttpClient { BaseAddress = new Uri(baseAddress) };
 });
 

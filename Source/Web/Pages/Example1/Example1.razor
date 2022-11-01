@@ -1,6 +1,7 @@
 @page "/example1"
-@using WebApi.Models
+@using Web.User;
 @inject ClientSettings ClientSettings
+@inject IUserService UserService
 @inject IStateManager State
 @inject IMediator Eventor
 @inject ISnackbar Snackbar
@@ -58,11 +59,7 @@
 
 	protected async Task ButtonClicked()
 	{
-		CurrentUser = await ClientSettings.ApiUrl
-		.AppendPathSegments("api", "user", "get", CurrentUser?.UserName)
-		.GetAsync()
-		.ReceiveJson<User>();
-
+		CurrentUser = await UserService.GetUserByUsername(CurrentUser?.UserName!);
 		await State.CommitState<User>(CurrentUser);
 		await Eventor.Publish<User>(this, CurrentUser);
 

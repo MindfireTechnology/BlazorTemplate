@@ -21,7 +21,7 @@ public class UserController : Controller
 		UserDataService = userDataService;
 	}
 
-	[HttpGet("get/{username}")]
+	[HttpGet("{username}")]
 	public async Task<ActionResult<Api.User>> GetUser([FromRoute] string username)
 	{
 		try
@@ -43,7 +43,7 @@ public class UserController : Controller
 		}
 	}
 
-	[HttpPut("address/update")]
+	[HttpPut("address")]
 	public async Task<ActionResult> UpdateAddress([FromBody] Api.Address address)
 	{
 		try

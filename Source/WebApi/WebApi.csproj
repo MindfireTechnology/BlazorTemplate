@@ -23,6 +23,8 @@
     <ProjectReference Include="..\Mindfire.User.Implementation\Mindfire.User.Implementation.csproj" />
     <ProjectReference Include="..\Mindfire.User\Mindfire.User.csproj" />
     <ProjectReference Include="..\WebApi.Models\WebApi.Models.csproj" />
+    <ProjectReference Include="..\WebApi.WeatherForecast.Services\WebApi.WeatherForecast.Services.csproj" />
+    <ProjectReference Include="..\WebApi.WeatherForecast\WebApi.WeatherForecast.csproj" />
   </ItemGroup>
 
 </Project>
