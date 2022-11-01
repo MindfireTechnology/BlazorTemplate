@@ -1,8 +1,11 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using WebApi.WeatherForecast;
+using Api = WebApi.Models;
 
 namespace WebApi.Controllers.WeatherForecast;
 
@@ -15,23 +18,28 @@ public class WeatherForecastController : ControllerBase
 		"Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 	};
 
-	private readonly ILogger<WeatherForecastController> _logger;
+	protected ILogger<WeatherForecastController> Logger { get; set; }
+	protected IWeatherForecastService ForecastService { get; set; }
+	protected IMapper Mapper { get; set; }
 
-	public WeatherForecastController(ILogger<WeatherForecastController> logger)
+	public WeatherForecastController(ILogger<WeatherForecastController> logger, IWeatherForecastService forecastService, IMapper mapper)
 	{
-		_logger = logger;
+		Logger = logger;
+		ForecastService = forecastService;
+		Mapper = mapper;
 	}
 
-	[HttpGet("get")]
-	public IEnumerable<WeatherForecast> Get()
+	[HttpGet("forecasts")]
+	public ActionResult<IEnumerable<Api.WeatherForecast>> GetForecasts()
 	{
-		var rng = new Random();
-		return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+		try
 		{
-			Date = DateTime.Now.AddDays(index),
-			TemperatureC = rng.Next(-20, 55),
-			Summary = Summaries[rng.Next(Summaries.Length)]
-		})
-		.ToArray();
+			return Ok(Mapper.Map<IEnumerable<Api.WeatherForecast>>(ForecastService.GetWeatherForecasts()));
+		}
+		catch (Exception ex)
+		{
+			Logger.LogError(ex, "Error occurred fetching forecasts.");
+			return StatusCode(StatusCodes.Status500InternalServerError);
+		}
 	}
 }

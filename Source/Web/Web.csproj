@@ -8,17 +8,23 @@
 
   <ItemGroup>
     <PackageReference Include="BlazorStateManager" Version="1.0.5" />
-    <PackageReference Include="Flurl.Http" Version="3.2.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="6.0.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.3" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="6.0.3" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.1" />
-    <PackageReference Include="MudBlazor" Version="6.0.9" />
-    <PackageReference Include="System.Text.Json" Version="6.0.2" />
+    <PackageReference Include="Flurl.Http" Version="3.2.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="7.0.0-rc.2.22476.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.0-rc.2.22476.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.0-rc.2.22476.2" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="7.0.0-rc.2.22476.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="7.0.0-rc.2.22472.3" />
+    <PackageReference Include="MudBlazor" Version="6.0.17" />
+    <PackageReference Include="Refit" Version="6.3.2" />
+    <PackageReference Include="Refit.HttpClientFactory" Version="6.3.2" />
+    <PackageReference Include="System.Text.Json" Version="7.0.0-rc.2.22472.3" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Web.User.Services\Web.User.Services.csproj" />
+    <ProjectReference Include="..\Web.User\Web.User.csproj" />
+    <ProjectReference Include="..\Web.WeatherForecast.Services\Web.WeatherForecast.Services.csproj" />
+    <ProjectReference Include="..\Web.WeatherForecast\Web.WeatherForecast.csproj" />
     <ProjectReference Include="..\WebApi.Models\WebApi.Models.csproj" />
   </ItemGroup>
 

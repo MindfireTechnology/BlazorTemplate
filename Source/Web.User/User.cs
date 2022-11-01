@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace WebApi.Models;
+namespace Web.User;
 
 public record User
 {

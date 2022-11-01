@@ -1,7 +1,7 @@
-@using WebApi.Models
+@using Web.User
 @using System.Windows.Input
 @inject IMediator Eventor
-@inject ClientSettings ClientSettings
+@inject IUserService UserService
 
 <MudTable Items="@Addresses" SortLabel="Sort By" Dense="@dense" Hover="@hover" Filter="new Func<Address,bool>(FilterFunc)" @bind-SelectedItem="selectedItem" CommitEditTooltip="Commit Edit" CommitEditCommand="@UpdateAddressCommand">
 	<ToolBarContent>
@@ -10,7 +10,7 @@
 		<MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Rounded.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
 	</ToolBarContent>
 	<HeaderContent>
-		<MudTh><MudTableSortLabel SortBy="new Func<Address, object>(x=>x.AddressType)">Type</MudTableSortLabel></MudTh>
+		<MudTh><MudTableSortLabel SortBy="new Func<Address, string?>(x=>x.AddressType)">Type</MudTableSortLabel></MudTh>
 		<MudTh>Street 1</MudTh>
 		<MudTh>Street 2</MudTh>
 		<MudTh>City</MudTh>
@@ -57,7 +57,7 @@
 	public ICommand? UpdateAddressCommand;
 
 	[Parameter]
-	public List<Address> Addresses { get; set; } = new List<Address>();
+	public List<Address>? Addresses { get; set; } = new List<Address>();
 
 	[Parameter]
 	public EventCallback<List<Address>> AddressesChanged { get; set; }
@@ -65,7 +65,7 @@
 	private bool dense = false;
 	private bool hover = true;
 	private string searchString = "";
-	private Address? selectedItem = null;
+	private Address? selectedItem;
 
 	protected bool FilterFunc(Address address)
 	{
@@ -78,17 +78,20 @@
 
 	protected override void OnInitialized()
 	{
+		Eventor.Subscribe<User>(this, (sender, user) =>
+		{
+			selectedItem = null;
+			StateHasChanged();
+			return Task.CompletedTask;
+		});
+
 		base.OnInitialized();
-		UpdateAddressCommand = new RelayCommand(CommitAddressEdit, null);
+		UpdateAddressCommand = new RelayCommand<Address>(CommitAddressEdit, null);
 	}
 
-	protected async void CommitAddressEdit(object? args)
+	protected async void CommitAddressEdit(Address? args)
 	{
-		var updated = args as Address;
-		await ClientSettings.ApiUrl
-		.AppendPathSegments("api", "user", "address", "update")
-		.PutJsonAsync(updated);
-
+		await UserService.UpdateAddress(args!);
 		await AddressesChanged.InvokeAsync(Addresses);
 
 		await Eventor.Publish<string>(this, "AddressUpdate", "Address successfully updated.");

@@ -3,13 +3,13 @@ using System.Windows.Input;
 
 namespace Web;
 
-public class RelayCommand : ICommand
+public class RelayCommand<T> : ICommand where T : class
 {
-	private readonly Action<object?> execute;
-	private readonly Func<object?, bool> canExecute;
+	private readonly Action<T?> execute;
+	private readonly Func<T?, bool>? canExecute;
 	public event EventHandler? CanExecuteChanged;
 
-	public RelayCommand(Action<object?> execute, Func<object?, bool> canExecute)
+	public RelayCommand(Action<T?> execute, Func<T?, bool>? canExecute)
 	{
 		this.execute = execute;
 		this.canExecute = canExecute;
@@ -17,11 +17,11 @@ public class RelayCommand : ICommand
 
 	public bool CanExecute(object? parameter)
 	{
-		return canExecute == null || canExecute(parameter);
+		return canExecute == null || canExecute(parameter as T);
 	}
 
 	public void Execute(object? parameter)
 	{
-		execute(parameter);
+		execute(parameter as T);
 	}
 }

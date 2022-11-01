@@ -5,7 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Mindfire.User;
 using Mindfire.User.Implementation;
+using WebApi.WeatherForecast.Services;
 using WebApi;
+using WebApi.WeatherForecast;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +17,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddDbContext<DatabaseContext>(config =>
 {
-	string connectionString = builder.Configuration.GetConnectionString("DatabaseConnection");
+	string? connectionString = builder.Configuration.GetConnectionString("DatabaseConnection");
 	config.UseSqlServer(connectionString);
 });
 
@@ -23,6 +25,7 @@ builder.Services.AddTransient<DbContext, DatabaseContext>();
 builder.Services.AddTransient<IRepository, Repository>();
 builder.Services.AddTransient(typeof(Func<>));
 builder.Services.AddTransient<IUserDataService, UserDataService>();
+builder.Services.AddTransient<IWeatherForecastService, WeatherForecastService>();
 
 builder.Services.AddCors();
 
@@ -48,6 +51,7 @@ var mapperConfig = new MapperConfiguration(cfg =>
 {
 	cfg.AddProfile(new ApiMapperConfiguration());
 	cfg.AddProfile(new UserMapperConfiguration());
+	cfg.AddProfile(new ForecastMapperConfiguration());
 });
 
 builder.Services.AddSingleton(mapperConfig.CreateMapper());
